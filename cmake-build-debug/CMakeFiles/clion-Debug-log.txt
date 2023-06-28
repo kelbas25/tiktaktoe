@@ -1,0 +1,4 @@
+/home/kelbas/clion/clion-2022.3.2/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/kelbas/clion/clion-2022.3.2/bin/ninja/linux/x64/ninja -G Ninja -S /home/kelbas/CLionProjects/TTTgame -B /home/kelbas/CLionProjects/TTTgame/cmake-build-debug
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/kelbas/CLionProjects/TTTgame/cmake-build-debug
