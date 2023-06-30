@@ -1,30 +1,29 @@
 #include <gtest/gtest.h>
-#include "../src/stateStack.hpp"
 #include "../src/resolver.hpp"
 
 TEST(BasicTests, FirstPlayerWinsCheck) {
-    StateStack states("X - - - X - 0 0 X");
-    ASSERT_EQ(Resolver::resolve(states.getState()), "First player wins\n");
+    State state("X - - - X - 0 0 X");
+    ASSERT_EQ(Resolver::resolve(state), "First player wins\n");
 }
 
 TEST(BasicTests, SecondPlayerWinsCheck) {
-    StateStack states("X X 0 X 0 - 0 - -");
-    ASSERT_EQ(Resolver::resolve(states.getState()), "Second player wins\n");
+    State state("X X 0 X 0 - 0 - -");
+    ASSERT_EQ(Resolver::resolve(state), "Second player wins\n");
 }
 
 TEST(BasicTests, DrawCheck) {
-    StateStack states("X X 0 0 0 X X 0 X");
-    ASSERT_EQ(Resolver::resolve(states.getState()), "Draw\n");
+    State state("X X 0 0 0 X X 0 X");
+    ASSERT_EQ(Resolver::resolve(state), "Draw\n");
 }
 
 TEST(BasicTests, GameInProgressCheck) {
-    StateStack states("X 0 X 0 - 0 X 0 X");
-    ASSERT_EQ(Resolver::resolve(states.getState()),  "Game in progress\n");
+    State state("X 0 X 0 - 0 X 0 X");
+    ASSERT_EQ(Resolver::resolve(state),  "Game in progress\n");
 }
 
 TEST(BasicTests, InvalidCheck) {
-    StateStack states("X 0 X X X 0 X 0 X");
-    ASSERT_ANY_THROW(Resolver::resolve(states.getState()));
+    State state("X 0 X X X 0 X 0 X");
+    ASSERT_ANY_THROW(Resolver::resolve(state));
 }
 
 class ParametredTestsFixture : public ::testing::TestWithParam<std::tuple<std::string, std::string>> {
@@ -32,7 +31,8 @@ class ParametredTestsFixture : public ::testing::TestWithParam<std::tuple<std::s
 };
     TEST_P(ParametredTestsFixture, OddYearsAreNotLeapYears) {
         std::tuple<std::string, std::string>params = GetParam();
-        std::string resolved_game = Resolver::resolve(std::get<0>(params));
+        State game(std::get<0>(params));
+        std::string resolved_game = Resolver::resolve(game);
         std::string expected_value = std::get<1>(params);
         ASSERT_EQ(resolved_game, expected_value);
     }

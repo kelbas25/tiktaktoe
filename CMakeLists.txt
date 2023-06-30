@@ -9,7 +9,7 @@ add_executable(
         TTTgame
         src/ttt.cpp
         src/resolver.hpp
-        src/stateStack.hpp
+        src/State.hpp
 )
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/lib/googletest-main")
 include_directories(lib/googletest-main/googletest/include)
