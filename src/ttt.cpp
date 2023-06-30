@@ -1,12 +1,21 @@
 #include "resolver.hpp"
-#include "IOworker.hpp"
-#include "stateHelper.hpp"
+#include "stateStack.hpp"
+
+ void writeToFile(const std::string& filename, const std::string& res){
+    std::ofstream file;
+    file.open(filename, std::ios::app);
+    if (file.is_open()) {
+        file << res;
+        file.close();
+    } else {
+        throw std::runtime_error(std::string("Failed to open the file: ") + filename);
+    }
+}
 
 int main(){
-    std::string context = IOworker::readFile("ttt.in");
-    context = StateHelper::eraseSpaces(context);
-    while (!context.empty()){
-        IOworker::writeToFile("ttt.out", Resolver::resolve(StateHelper::extract(context)));
-        StateHelper::cut(context);
+    StateStack stack;
+    stack.readFromFIle("ttt.in");
+    while (!stack.isEmpty()){
+        writeToFile("ttt.out", Resolver::resolve(stack.getState()));
     }
 }

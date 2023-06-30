@@ -8,9 +8,8 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(
         TTTgame
         src/ttt.cpp
-        src/IOworker.hpp
         src/resolver.hpp
-        src/stateHelper.hpp
+        src/stateStack.hpp
 )
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/lib/googletest-main")
 include_directories(lib/googletest-main/googletest/include)

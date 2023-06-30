@@ -15,7 +15,7 @@ public:
     }
 
     static std::string resolve(std::string state){
-        if (state.length() < 9){
+        if (state.length() != 9){
             throw std::runtime_error("Invalid game");
         }
         int balance = 0;

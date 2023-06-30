@@ -1,33 +1,31 @@
-## Tic-Tac-Toe Game Architecture
+# Tic-Tac-Toe Resolver Application
 
-The Tic-Tac-Toe game application consists of several components that work together to handle game resolution and IO operations. Let's explore the architecture of the application:
+This application provides a resolver for the game of Tic-Tac-Toe. It analyzes the current state of the game and determines the outcome, whether it is a win for the first player, a win for the second player, a draw, or if the game is still in progress.
 
-### Resolver Class
-The `Resolver` class provides methods to resolve the Tic-Tac-Toe game state and determine the outcome. It includes the following static methods:
-- `playerNumber(symbol)`: Returns the player number ("First" or "Second") corresponding to a given symbol ('X' or '0').
-- `resolve(state)`: Takes a string representing the current game state and returns the result of the game. It checks for a valid game state, evaluates the symbol balance, checks for winning conditions, and determines the winner or if the game is still in progress.
+## Architecture
 
-### IOworker Class
-The `IOworker` class handles file input and output operations for reading the game state from a file and writing the game result to another file. It includes the following methods:
-- `readFile(filename)`: Reads the content of a file specified by the filename and returns it as a string.
-- `writeToFile(filename, res)`: Appends the provided result string to a file specified by the filename.
+The application consists of the following components:
 
-### StateHelper Class
-The `StateHelper` class provides helper methods to manipulate and extract information from the game state string. It includes the following methods:
-- `eraseSpaces(context)`: Removes any spaces from the input string.
-- `extract(states)`: Extracts the first game state (9 characters) from the provided string representing multiple game states.
-- `cut(states)`: Removes the first game state from the provided string representing multiple game states.
+1. **Resolver**: The `Resolver` class contains static methods for resolving the Tic-Tac-Toe game. It has the following responsibilities:
+    - Determining the player number based on the symbol ('X' or '0').
+    - Verifying the validity of the game state.
+    - Checking for a win or draw condition.
+    - Returning the appropriate result based on the game state.
 
-### Main Function
-The main function of the program coordinates the execution of the Tic-Tac-Toe game. It performs the following steps:
-1. Reads the game states from the input file ("ttt.in") using `IOworker::readFile`.
-2. Removes spaces from the input using `StateHelper::eraseSpaces`.
-3. Iterates over the game states until there are no more states.
-4. For each game state, it resolves the state using `Resolver::resolve`.
-5. Writes the result to the output file ("ttt.out") using `IOworker::writeToFile`.
-6. Cuts the processed game state using `StateHelper::cut`.
+2. **StateStack**: The `StateStack` class represents a stack of game states. It manages the game states and provides operations for retrieving, setting, and adding states. It also supports reading game states from a file. The class ensures that the game states are free from unnecessary spaces.
 
-### Unit Tests
-The code includes a set of unit tests written using the Google Test framework (`gtest/gtest.h`). These tests validate the correctness of the resolver logic by asserting the expected output for different game states. The test cases cover scenarios such as first player wins, second player wins, draw, game in progress, and invalid game state. Each test case uses `Resolver::resolve` and `StateHelper::eraseSpaces` to resolve the game state and compare the result with the expected outcome using assertions.
+3. **Main Program**: The main program executes the resolver on a set of game states read from an input file. It utilizes the `StateStack` and `Resolver` classes to resolve each game state and writes the results to an output file.
 
-This architecture follows a modular design, with separate classes for resolving game states, handling IO operations, and manipulating game state strings. The main function coordinates the flow of execution, and the unit tests ensure the accuracy of the resolver logic.
+## Advantages of an Extensible Architecture
+
+The extensible architecture of this Tic-Tac-Toe resolver application offers several advantages:
+
+1. **Modularity**: The application is divided into separate classes, each with its own responsibilities. This modular design allows for easier maintenance, debugging, and testing of individual components.
+
+2. **Reusability**: The classes can be reused in other projects or extended to support additional functionalities. For example, the `Resolver` class can be utilized in a graphical user interface (GUI) implementation of Tic-Tac-Toe.
+
+3. **Scalability**: The application can handle multiple game states by utilizing the `StateStack` class. It can easily accommodate an increasing number of game states without significant changes to the overall architecture.
+
+4. **Separation of Concerns**: The responsibilities of reading game states, resolving game outcomes, and writing results are clearly separated into different classes. This separation allows for easier comprehension of each component's purpose and promotes maintainability.
+
+5. **Testing and Debugging**: The application includes unit tests written using the Google Test framework (`gtest`). These tests ensure the correctness of the resolver and state stack implementations. The extensible architecture enables easy integration of new tests and facilitates efficient debugging.
