@@ -1,5 +1,4 @@
 #include "resolver.hpp"
-#include "stateStack.hpp"
 
  void writeToFile(const std::string& filename, const std::string& res){
     std::ofstream file;
@@ -13,9 +12,18 @@
 }
 
 int main(){
-    StateStack stack;
-    stack.readFromFIle("ttt.in");
-    while (!stack.isEmpty()){
-        writeToFile("ttt.out", Resolver::resolve(stack.getState()));
+    std::ifstream file;
+    std::string filename = "ttt.in";
+    file.open(filename);
+    if (file.is_open()){
+        std::string line;
+        while (std::getline(file, line)){
+            State state(line);
+            writeToFile("ttt.out", Resolver::resolve(state));
+        }
+    }else{
+        throw std::runtime_error(std::string("Failed to open the file: ") + filename);
     }
+    file.close();
+
 }

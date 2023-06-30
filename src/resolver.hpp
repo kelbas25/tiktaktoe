@@ -1,4 +1,4 @@
-#include <iostream>
+#include "State.hpp"
 
 class Resolver{
 public:
@@ -14,10 +14,8 @@ public:
         return "";
     }
 
-    static std::string resolve(std::string state){
-        if (state.length() != 9){
-            throw std::runtime_error("Invalid game");
-        }
+    static std::string resolve(State state){
+
         int balance = 0;
         for (auto i : state){
             if (i == 'X') ++balance;
