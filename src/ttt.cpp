@@ -1,29 +1,29 @@
 #include "resolver.hpp"
 
- void writeToFile(const std::string& filename, const std::string& res){
-    std::ofstream file;
-    file.open(filename, std::ios::app);
+std::unordered_map<std::string, std::string> Resolver::cache;
+
+
+ void writeToFile(std::ofstream& file, const std::string& res){
     if (file.is_open()) {
         file << res;
-        file.close();
     } else {
-        throw std::runtime_error(std::string("Failed to open the file: ") + filename);
+        throw std::runtime_error( "Failed to open the output file");
     }
 }
 
 int main(){
-    std::ifstream file;
-    std::string filename = "ttt.in";
-    file.open(filename);
-    if (file.is_open()){
+    std::ifstream input("ttt.in");
+    if (input.is_open()){
         std::string line;
-        while (std::getline(file, line)){
+        std::ofstream output("ttt.out");
+        while (std::getline(input, line)){
             State state(line);
-            writeToFile("ttt.out", Resolver::resolve(state));
+            writeToFile(output, Resolver::resolve(state));
         }
+        output.close();
     }else{
-        throw std::runtime_error(std::string("Failed to open the file: ") + filename);
+        throw std::runtime_error("Failed to open the input file");
     }
-    file.close();
+    input.close();
 
 }

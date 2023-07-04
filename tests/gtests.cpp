@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "../src/resolver.hpp"
+std::unordered_map<std::string, std::string> Resolver::cache;
 
 TEST(BasicTests, FirstPlayerWinsCheck) {
     State state("X - - - X - 0 0 X");
@@ -25,6 +26,7 @@ TEST(BasicTests, InvalidCheck) {
     State state("X 0 X X X 0 X 0 X");
     ASSERT_ANY_THROW(Resolver::resolve(state));
 }
+
 
 class ParametredTestsFixture : public ::testing::TestWithParam<std::tuple<std::string, std::string>> {
 

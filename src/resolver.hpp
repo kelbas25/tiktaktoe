@@ -14,91 +14,66 @@ public:
         return "";
     }
 
+    /**
+ * Resolves the game state and determines the result.
+ *
+ * @param state The game state to resolve.
+ * @return The result of the game state.
+ * @throws std::runtime_error if the game state is invalid.
+ */
+
     static std::string resolve(State state){
+        // Check if the game state is already cached
+        if(cache.count(state.getState())){
+            if (cache[state.getState()] == "Invalid game"){
+                throw std::runtime_error("Invalid game");
+            }
+            return cache[state.getState()];
+        }
 
-        int balance = 0;
-        for (auto i : state){
-            if (i == 'X') ++balance;
-            if (i == '0') --balance;
-        }
-        if (balance < -1 || balance > 1){
-            throw std::runtime_error("Invalid game");
-        }
-        bool isEnded = true;
+        // Define the winning combinations for the game
+        const std::vector<std::vector<int>> winningCombinations = {
+                {0, 1, 2}, {3, 4, 5}, {6, 7, 8},
+                {0, 3, 6}, {1, 4, 7}, {2, 5, 8},
+                {0, 4, 8}, {2, 4, 6}
+        };
+
+        bool isEnded = std::find(state.begin(), state.end(), '-') == state.end();
         std::string winner;
-        for (auto i : state){
-            if (i == '-'){
-                isEnded = false;
+
+        // Check each winning combination
+        for (auto combination : winningCombinations){
+            bool isWinnerFound = state[combination[0]] == state[combination[1]] \
+                            && state[combination[1]] == state[combination[2]] \
+                            && state[combination[0]] != '-';
+            if (isWinnerFound){
+                if (!winner.empty()){
+                    cache.insert({state.getState(),"Invalid game"});
+                    throw std::runtime_error("Invalid game");
+                }
+                isEnded = true;
+                winner = playerNumber(state[combination[0]]);
             }
         }
 
-        if (state[0] == state[1] && state[1] == state[2] && state[0] != '-') {
-            isEnded = true;
-            if (!winner.empty()){
-                throw std::runtime_error("Invalid game");
-            }
-            winner = playerNumber(state[0]);
-        }
-        else if (state[3] == state[4] && state[4] == state[5] && state[3] != '-'){
-            isEnded = true;
-            if (!winner.empty()){
-                throw std::runtime_error("Invalid game");
-            }
-            winner = playerNumber(state[3]);
-        }
-        else if (state[6] == state[7] && state[7] == state[8] && state[6] != '-'){
-            isEnded = true;
-            if (!winner.empty()){
-                throw std::runtime_error("Invalid game");
-            }
-            winner = playerNumber(state[6]);
-
-        }
-        else if (state[0] == state[4] && state[4] == state[8] && state[0] != '-'){
-            isEnded = true;
-            if (!winner.empty()){
-                throw std::runtime_error("Invalid game");
-            }
-            winner = playerNumber(state[0]);
-
-        }
-        else if (state[2] == state[4] && state[4] == state[6] && state[2] != '-'){
-            isEnded = true;
-            if (!winner.empty()){
-                throw std::runtime_error("Invalid game");
-            }
-            winner = playerNumber(state[2]);
-        }
-        else if (state[0] == state[3] && state[3] == state[6] && state[0] != '-'){
-            isEnded = true;
-            if (!winner.empty()){
-                throw std::runtime_error("Invalid game");
-            }
-            winner = playerNumber(state[0]);
-        }
-        else if (state[1] == state[4] && state[4] == state[7] && state[1] != '-'){
-            isEnded = true;
-            if (!winner.empty()){
-                throw std::runtime_error("Invalid game");
-            }
-            winner = playerNumber(state[1]);
-        }
-        else if (state[2] == state[5] && state[5] == state[8] && state[2] != '-'){
-            isEnded = true;
-            if (!winner.empty()){
-                throw std::runtime_error("Invalid game");
-            }
-            winner = playerNumber(state[2]);
-        }
+        std::string result;
+        // Determine the final result based on game state and winner
         if (isEnded) {
             if (!winner.empty()){
-                return winner + " player wins\n";
+                result = winner + " player wins\n";
             }else{
-                return "Draw\n";
+                result = "Draw\n";
             }
         }
-        else return "Game in progress\n";
+        else {
+            result = "Game in progress\n";
+        }
+        // Cache the result for future reference
+        cache.insert({state.getState(),result});
+        return result;
     }
 
+private:
+    static std::unordered_map<std::string, std::string> cache;
 };
 

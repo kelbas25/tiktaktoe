@@ -25,6 +25,9 @@ public:
     auto end(){
         return this->state_.end();
     }
+    std::string getState(){
+        return state_;
+    }
 
 
 private:
