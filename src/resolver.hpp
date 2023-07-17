@@ -1,7 +1,6 @@
 #include <iostream>
 #include <algorithm>
 
-std::string invalidGameError = "Invalid game";
 
 class Resolver{
 public:
@@ -9,30 +8,36 @@ public:
 
     static std::string playerNumber(char& symbol){
         if (symbol == 'X'){
-            return "First";
+            return Resolver::getMessage( "First");
         }
         if (symbol == '0'){
-            return "Second";
+            return Resolver::getMessage( "Second");
         }
         return "";
     }
 
     /**
- * Resolves the game state and determines the result.
- *
- * @param state The game state to resolve.
- * @return The result of the game state.
- * @throws std::runtime_error if the game state is invalid.
- */
+    * Resolves the game state and determines the result.
+    *
+    * @param state The game state to resolve.
+    * @return The result of the game state.
+    */
 
     static std::string resolve(std::string state){
         // Check if the game state is already cached
-        if(cache.count(state)){
-            if (cache[state] == invalidGameError){
-                throw std::runtime_error(invalidGameError);
-            }
-            return cache[state];
+        if(Resolver::cache.count(state)){
+            return Resolver::cache[state];
         }
+
+        if (state.size() != 9){
+            return Resolver::getMessage("InvalidGame");
+        }
+
+        int balance = std::count(state.begin(), state.end(), 'X') - std::count(state.begin(), state.end(), '0');
+        if (balance < 0 || balance > 1){
+            return Resolver::getMessage("InvalidGame");
+        }
+
 
         // Define the winning combinations for the game
         const std::vector<std::vector<int>> winningCombinations = {
@@ -46,16 +51,22 @@ public:
 
         // Check each winning combination
         for (auto combination : winningCombinations){
+
             bool isWinnerFound = state[combination[0]] == state[combination[1]] \
                             && state[combination[1]] == state[combination[2]] \
                             && state[combination[0]] != '-';
             if (isWinnerFound){
                 if (!winner.empty()){
-                    cache.insert({state,invalidGameError});
-                    throw std::runtime_error(invalidGameError);
+                    cache.insert({state,Resolver::getMessage( "InvalidGame")});
+                    return Resolver::getMessage( "InvalidGame");
                 }
                 isEnded = true;
                 winner = playerNumber(state[combination[0]]);
+                if (state[combination[0]] == 'X'){
+                    if (balance <= 0) {
+                        return Resolver::getMessage("InvalidGame");
+                    }
+                }
             }
         }
 
@@ -63,20 +74,42 @@ public:
         // Determine the final result based on game state and winner
         if (isEnded) {
             if (!winner.empty()){
-                result = winner + " player wins\n";
+                result = winner + Resolver::getMessage( "PlayerWins");
             }else{
-                result = "Draw\n";
+                result = Resolver::getMessage( "Draw");
             }
         }
         else {
-            result = "Game in progress\n";
+            result = Resolver::getMessage( "Progress");
         }
         // Cache the result for future reference
         cache.insert({state,result});
         return result;
     }
 
-private:
+    /**
+    * Change localization of output results
+    *
+    * @param language (only three languages is acceptable - "en", "ro", "ru")
+    */
+    static void setLanguage(const std::string& language){
+        if (!Resolver::messages.count(language)){
+            throw std::runtime_error(Resolver::getMessage("Localization"));
+        }
+        Resolver::localization = language;
+    }
+    /**
+    * Getting localized output/exception message
+    *
+    * @param message is key for hash-table for message with current localization
+    * @return localized output/exception message
+    */
+    static std::string getMessage(const std::string& message){
+        return Resolver::messages[Resolver::localization][message];
+    }
+
+    static std::string localization;
+    static std::unordered_map<std::string, std::unordered_map<std::string, std::string>> messages;
     static std::unordered_map<std::string, std::string> cache;
 };
 

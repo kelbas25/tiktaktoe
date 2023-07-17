@@ -1,11 +1,11 @@
-#include "resolver.hpp"
 #include <fstream>
+#include "localizations.hpp"
 
 std::unordered_map<std::string, std::string> Resolver::cache;
+std::string Resolver::localization = "en";
 std::string inputFile = "ttt.in";
 std::string outputFile = "ttt.out";
-std::string inputFileError = "Failed to open the input file";
-std::string outputFileError = "Something wrong with output file";
+
 
 void eraseSpaces(std::string& state){
     while (std::find(state.begin(), state.end(), ' ') != state.end()){
@@ -18,14 +18,11 @@ int main(){
     std::ifstream input(inputFile);
     std::vector<std::string> states;
     if (!input.is_open()){
-        throw std::runtime_error(inputFileError);
+        throw std::runtime_error(Resolver::getMessage("Input"));
     }
     std::string line;
     while (std::getline(input, line)){
         eraseSpaces(line);
-        if (line.size() != 9){
-            throw std::runtime_error(invalidGameError);
-        }
         states.push_back(line);
     }
     input.close();
@@ -39,7 +36,7 @@ int main(){
 
     std::ofstream output(outputFile);
     if (!output.is_open()){
-        throw std::runtime_error(outputFileError);
+        throw std::runtime_error(Resolver::getMessage("Output"));
     }
 
     for (const auto& i : results){
