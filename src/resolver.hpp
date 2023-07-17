@@ -1,4 +1,7 @@
-#include "State.hpp"
+#include <iostream>
+#include <algorithm>
+
+std::string invalidGameError = "Invalid game";
 
 class Resolver{
 public:
@@ -22,13 +25,13 @@ public:
  * @throws std::runtime_error if the game state is invalid.
  */
 
-    static std::string resolve(State state){
+    static std::string resolve(std::string state){
         // Check if the game state is already cached
-        if(cache.count(state.getState())){
-            if (cache[state.getState()] == "Invalid game"){
-                throw std::runtime_error("Invalid game");
+        if(cache.count(state)){
+            if (cache[state] == invalidGameError){
+                throw std::runtime_error(invalidGameError);
             }
-            return cache[state.getState()];
+            return cache[state];
         }
 
         // Define the winning combinations for the game
@@ -48,8 +51,8 @@ public:
                             && state[combination[0]] != '-';
             if (isWinnerFound){
                 if (!winner.empty()){
-                    cache.insert({state.getState(),"Invalid game"});
-                    throw std::runtime_error("Invalid game");
+                    cache.insert({state,invalidGameError});
+                    throw std::runtime_error(invalidGameError);
                 }
                 isEnded = true;
                 winner = playerNumber(state[combination[0]]);
@@ -69,7 +72,7 @@ public:
             result = "Game in progress\n";
         }
         // Cache the result for future reference
-        cache.insert({state.getState(),result});
+        cache.insert({state,result});
         return result;
     }
 
