@@ -1,0 +1,2 @@
+After conducting this experiment, I saw that the caching mechanism in this case significantly reduces the execution
+time of the program, approximately ~ 5 times faster for this program.
