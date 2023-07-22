@@ -1,0 +1,6 @@
+cmake-build-debug
+ttt
+*.in
+*.out
+.idea
+benchmarking

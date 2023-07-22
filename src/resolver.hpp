@@ -24,10 +24,6 @@ public:
     */
 
     static std::string resolve(std::string state){
-        // Check if the game state is already cached
-        if(Resolver::cache.count(state)){
-            return Resolver::cache[state];
-        }
 
         if (state.size() != 9){
             return Resolver::getMessage("InvalidGame");
@@ -37,7 +33,6 @@ public:
         if (balance < 0 || balance > 1){
             return Resolver::getMessage("InvalidGame");
         }
-
 
         // Define the winning combinations for the game
         const std::vector<std::vector<int>> winningCombinations = {
@@ -55,6 +50,7 @@ public:
             bool isWinnerFound = state[combination[0]] == state[combination[1]] \
                             && state[combination[1]] == state[combination[2]] \
                             && state[combination[0]] != '-';
+
             if (isWinnerFound){
                 if (!winner.empty()){
                     cache.insert({state,Resolver::getMessage( "InvalidGame")});
@@ -71,6 +67,7 @@ public:
         }
 
         std::string result;
+
         // Determine the final result based on game state and winner
         if (isEnded) {
             if (!winner.empty()){
@@ -82,6 +79,7 @@ public:
         else {
             result = Resolver::getMessage( "Progress");
         }
+
         // Cache the result for future reference
         cache.insert({state,result});
         return result;
@@ -92,18 +90,21 @@ public:
     *
     * @param language (only three languages is acceptable - "en", "ro", "ru")
     */
+
     static void setLanguage(const std::string& language){
         if (!Resolver::messages.count(language)){
             throw std::runtime_error(Resolver::getMessage("Localization"));
         }
         Resolver::localization = language;
     }
+
     /**
     * Getting localized output/exception message
     *
     * @param message is key for hash-table for message with current localization
     * @return localized output/exception message
     */
+
     static std::string getMessage(const std::string& message){
         return Resolver::messages[Resolver::localization][message];
     }
