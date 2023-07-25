@@ -1,3 +1,11 @@
+# How to run in docker container
+
+1. Install docker on your machine 
+2. Run in terminal: 
+```
+    docker build -t ttt_game .
+    docker run --rm -v $(pwd)/build:$/TTTgame/build ttt_game
+```
 # Application Architecture
 
 The provided application is a Tic-Tac-Toe game resolver implemented in C++. It consists of several classes and functions that work together to determine the outcome of a Tic-Tac-Toe game based on the given game state.
